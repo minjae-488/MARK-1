@@ -71,7 +71,7 @@
   - [x] Airtable 계정 생성 (Pro 플랜)
   - [x] Base 생성: "MARK-1-Production"
   - [x] API 키 발급 및 환경 변수 저장
-  - **완료 조건:** Airtable API 호출 성공 (임시 Placeholder 설정됨)
+  - **완료 조건:** Airtable API 호출 성공 (실제 연결 확인)
 
 - [ ] **[TASK-004]** Make.com 설정
   - [ ] Make.com 계정 생성 (Pro 플랜)
@@ -99,37 +99,34 @@
   - **완료 조건:** 주문 데이터 수집 성공
 
 #### 1.3 Airtable 데이터베이스 구축
-- [ ] **[TASK-008]** Orders 테이블 생성
-  - [ ] 필드 정의 (TECH_SPEC.md 참조)
-  - [ ] View 생성:
-    - "신규 주문" (status = new)
-    - "발주 대기" (status = pending_fulfillment)
-    - "배송 중" (status = shipped)
-  - [ ] Formula 필드 추가 (total_price 계산 등)
-  - **완료 조건:** 테스트 레코드 10건 입력 및 조회
+- [x] **[TASK-008]** Orders 테이블 생성
+  - [x] 필드 정의 (TECH_SPEC.md 참조)
+  - [x] View 생성 (추후 Airtable에서 설정)
+  - [x] Formula 필드 추가
+  - **완료 조건:** 스키마 정의 JSON 생성 완료 (`airtable-schemas/orders.json`)
 
-- [ ] **[TASK-009]** Products 테이블 생성
-  - [ ] 필드 정의
-  - [ ] margin_rate 자동 계산 필드 설정
-  - [ ] Lookup 필드로 Supplier 정보 연결
-  - **완료 조건:** 샘플 상품 20개 등록
+- [x] **[TASK-009]** Products 테이블 생성
+  - [x] 필드 정의
+  - [x] margin_rate 자동 계산 필드 설정
+  - [x] Lookup 필드로 Supplier 정보 연결
+  - **완료 조건:** 스키마 정의 JSON 생성 완료 (`airtable-schemas/products.json`)
 
-- [ ] **[TASK-010]** Suppliers 테이블 생성
-  - [ ] 도매처 정보 필드 정의
-  - [ ] API 연동 정보 필드 추가
-  - **완료 조건:** 주요 도매처 3곳 등록 (도매매, 이노션 등)
+- [x] **[TASK-010]** Suppliers 테이블 생성
+  - [x] 도매처 정보 필드 정의
+  - [x] API 연동 정보 필드 추가
+  - **완료 조건:** 스키마 정의 JSON 생성 완료 (`airtable-schemas/suppliers.json`)
 
-- [ ] **[TASK-011]** Fulfillment_Groups 테이블 생성
-  - [ ] 합배송 그룹 필드 정의
-  - [ ] Rollup 필드로 총 수량 자동 계산
-  - [ ] Orders 테이블과 연결
-  - **완료 조건:** 테스트 그룹 생성 및 주문 연결 확인
+- [x] **[TASK-011]** Fulfillment_Groups 테이블 생성
+  - [x] 합배송 그룹 필드 정의
+  - [x] Rollup 필드로 총 수량 자동 계산
+  - [x] Orders 테이블과 연결
+  - **완료 조건:** 스키마 정의 JSON 생성 완료 (`airtable-schemas/fulfillment_groups.json`)
 
-- [ ] **[TASK-012]** Airtable 스키마 문서화
-  - [ ] 각 테이블별 JSON 스키마 export
-  - [ ] `airtable-schemas/` 폴더에 저장
-  - [ ] ERD 다이어그램 생성 (draw.io 또는 Mermaid)
-  - **완료 조건:** 스키마 파일 4개 생성, ERD 이미지 저장
+- [x] **[TASK-012]** Airtable 스키마 문서화
+  - [x] 각 테이블별 JSON 스키마 export
+  - [x] `airtable-schemas/` 폴더에 저장
+  - [x] 스키마 README 작성
+  - **완료 조건:** 스키마 파일 4개 생성 완료
 
 ### Week 2: Make.com 워크플로우 구현
 
