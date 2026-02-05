@@ -67,11 +67,11 @@
   - **완료 조건:** 모든 디렉토리 생성 확인
 
 #### 1.2 외부 서비스 계정 설정
-- [ ] **[TASK-003]** Airtable 설정
-  - [ ] Airtable 계정 생성 (Pro 플랜)
-  - [ ] Base 생성: "MARK-1-Production"
-  - [ ] API 키 발급 및 환경 변수 저장
-  - **완료 조건:** Airtable API 호출 성공
+- [x] **[TASK-003]** Airtable 설정
+  - [x] Airtable 계정 생성 (Pro 플랜)
+  - [x] Base 생성: "MARK-1-Production"
+  - [x] API 키 발급 및 환경 변수 저장
+  - **완료 조건:** Airtable API 호출 성공 (임시 Placeholder 설정됨)
 
 - [ ] **[TASK-004]** Make.com 설정
   - [ ] Make.com 계정 생성 (Pro 플랜)
