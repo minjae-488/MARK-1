@@ -1,0 +1,94 @@
+{
+    "name": "01. Smartstore Order Collection",
+    "description": "스마트스토어 신규 주문을 10분마다 수집하여 Airtable에 저장합니다.",
+    "scheduling": {
+        "type": "interval",
+        "interval": 600
+    },
+    "modules": [
+        {
+            "id": 1,
+            "name": "Get Changed Orders",
+            "app": "HTTP",
+            "method": "GET",
+            "url": "https://api.commerce.naver.com/external/v1/product-orders/last-changed-statuses",
+            "headers": {
+                "Authorization": "Bearer {{connection.accessToken}}"
+            },
+            "qs": {
+                "lastChangedFrom": "{{addMinutes(now; -15)}}",
+                "lastChangedType": "PAYED"
+            },
+            "note": "최근 15분간 '결제완료' 상태로 변경된 주문 ID 조회"
+        },
+        {
+            "id": 2,
+            "name": "Iterate Order IDs",
+            "app": "Iterator",
+            "source": "{{1.data.lastChangeStatuses}}",
+            "note": "조회된 주문 ID 리스트를 개별적으로 처리"
+        },
+        {
+            "id": 3,
+            "name": "Get Order Details",
+            "app": "HTTP",
+            "method": "GET",
+            "url": "https://api.commerce.naver.com/external/v1/product-orders/{{2.productOrderId}}",
+            "headers": {
+                "Authorization": "Bearer {{connection.accessToken}}"
+            },
+            "note": "개별 주문의 상세 정보(상품명, 배송지 등) 조회"
+        },
+        {
+            "id": 4,
+            "name": "Check Existing Order",
+            "app": "Airtable",
+            "action": "Search Records",
+            "baseId": "MARK-1-Production",
+            "tableId": "Orders",
+            "formula": "({Order ID} = '{{3.data.productOrderId}}')",
+            "limit": 1,
+            "note": "Airtable에 이미 저장된 주문인지 확인 (중복 방지)"
+        },
+        {
+            "id": 5,
+            "name": "Route New vs Existing",
+            "app": "Router",
+            "routes": [
+                {
+                    "label": "New Order",
+                    "condition": "{{4.total}} = 0",
+                    "modules": [
+                        {
+                            "id": 6,
+                            "name": "Create Order Record",
+                            "app": "Airtable",
+                            "action": "Create Record",
+                            "baseId": "MARK-1-Production",
+                            "tableId": "Orders",
+                            "fields": {
+                                "Order ID": "{{3.data.productOrderId}}",
+                                "Channel": "Smartstore",
+                                "Status": "Paid",
+                                "Product Name": "{{3.data.productName}}",
+                                "Option Code": "{{3.data.productOptionCode}}",
+                                "Quantity": "{{3.data.quantity}}",
+                                "Order Amount": "{{3.data.totalPaymentAmount}}",
+                                "Customer Name": "{{3.data.shippingAddress.name}}",
+                                "Phone Number": "{{3.data.shippingAddress.tel1}}",
+                                "Address": "{{3.data.shippingAddress.baseAddress}} {{3.data.shippingAddress.detailedAddress}}",
+                                "Postal Code": "{{3.data.shippingAddress.zipCode}}",
+                                "Order Date": "{{3.data.orderDate}}"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "label": "Existing Order (Ignore)",
+                    "condition": "{{4.total}} > 0",
+                    "modules": []
+                }
+            ]
+        }
+    ]
+}

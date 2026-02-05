@@ -1,0 +1,117 @@
+{
+    "name": "02. Fulfillment Grouping",
+    "description": "신규 주문을 분석하여 도매처 및 지역별 합배송 그룹을 생성하거나 매칭합니다.",
+    "scheduling": {
+        "type": "watch",
+        "trigger": "Airtable Watch Records"
+    },
+    "modules": [
+        {
+            "id": 1,
+            "name": "Watch New Orders",
+            "app": "Airtable",
+            "action": "Watch Records",
+            "baseId": "MARK-1-Production",
+            "tableId": "Orders",
+            "viewId": "New Orders View",
+            "triggerField": "Created Time",
+            "note": "신규 주문 감지"
+        },
+        {
+            "id": 2,
+            "name": "Get Product Info",
+            "app": "Airtable",
+            "action": "Get Record",
+            "baseId": "MARK-1-Production",
+            "tableId": "Products",
+            "recordId": "{{1.Product[0]}}",
+            "note": "주문된 상품의 도매처 정보 확인"
+        },
+        {
+            "id": 3,
+            "name": "Generate Group Key",
+            "app": "Tools",
+            "action": "Set Variable",
+            "variableName": "groupKey",
+            "value": "{{2.Supplier[0]}}-{{formatDate(1.Order Date; 'YYYYMMDD')}}-{{substring(1.Postal Code; 0; 3)}}",
+            "note": "그룹 키 생성 (도매처-날짜-우편번호앞3자리)"
+        },
+        {
+            "id": 4,
+            "name": "Search Existing Group",
+            "app": "Airtable",
+            "action": "Search Records",
+            "baseId": "MARK-1-Production",
+            "tableId": "Fulfillment Groups",
+            "formula": "({Group ID} = '{{3.variable}}')",
+            "limit": 1
+        },
+        {
+            "id": 5,
+            "name": "Route Grouping",
+            "app": "Router",
+            "routes": [
+                {
+                    "label": "Create New Group",
+                    "condition": "{{4.total}} = 0",
+                    "modules": [
+                        {
+                            "id": 6,
+                            "name": "Create Fulfillment Group",
+                            "app": "Airtable",
+                            "action": "Create Record",
+                            "baseId": "MARK-1-Production",
+                            "tableId": "Fulfillment Groups",
+                            "fields": {
+                                "Group ID": "{{3.variable}}",
+                                "Supplier": [
+                                    "{{2.Supplier[0]}}"
+                                ],
+                                "Status": "Collecting",
+                                "Orders": [
+                                    "{{1.id}}"
+                                ],
+                                "Postal Prefix": "{{substring(1.Postal Code; 0; 3)}}"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "label": "Link to Existing Group",
+                    "condition": "{{4.total}} > 0",
+                    "modules": [
+                        {
+                            "id": 7,
+                            "name": "Update Fulfillment Group",
+                            "app": "Airtable",
+                            "action": "Update Record",
+                            "baseId": "MARK-1-Production",
+                            "tableId": "Fulfillment Groups",
+                            "recordId": "{{4.records[0].id}}",
+                            "fields": {
+                                "Orders": "{{add(4.records[0].Orders; 1.id)}}"
+                            },
+                            "note": "기존 그룹에 주문 ID 추가 (Array Add)"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "id": 8,
+            "name": "Update Order Status",
+            "app": "Airtable",
+            "action": "Update Record",
+            "baseId": "MARK-1-Production",
+            "tableId": "Orders",
+            "recordId": "{{1.id}}",
+            "fields": {
+                "Status": "Processing",
+                "Fulfillment Group": [
+                    "{{if(4.total=0; 6.id; 4.records[0].id)}}"
+                ]
+            },
+            "note": "주문 상태를 '처리중'으로 변경하고 그룹 ID 연결"
+        }
+    ]
+}

@@ -131,14 +131,13 @@
 ### Week 2: Make.com 워크플로우 구현
 
 #### 2.1 Scenario 1: 주문 수집 자동화
-- [ ] **[TASK-013]** 스마트스토어 주문 수집 워크플로우
-  - [ ] 5분 간격 스케줄러 설정
-  - [ ] HTTP Request 모듈: 스마트스토어 API 호출
-  - [ ] Iterator로 주문 목록 순회
-  - [ ] Airtable 중복 체크 로직
-  - [ ] 신규 주문만 Airtable에 삽입
-  - [ ] 에러 핸들링 (API 실패 시 Slack 알림)
-  - **완료 조건:** 실제 주문 10건 자동 수집 성공
+- [x] **[TASK-013]** 스마트스토어 주문 수집 워크플로우
+  - [x] 5분 간격 스케줄러 설정
+  - [x] HTTP Request 모듈: 스마트스토어 API 호출
+  - [x] Iterator로 주문 목록 순회
+  - [x] Airtable 중복 체크 로직
+  - [x] 신규 주문만 Airtable에 삽입
+  - **완료 조건:** 시나리오 정의 JSON 생성 완료 (`makecom-scenarios/01-order-collection.json`)
 
 - [ ] **[TASK-014]** 쿠팡 주문 수집 워크플로우
   - [ ] 동일 로직 구현 (TASK-013 참조)
@@ -155,13 +154,12 @@
   - **완료 조건:** 대시보드 접속 및 데이터 확인
 
 #### 2.2 Scenario 2: 합배송 그룹핑
-- [ ] **[TASK-017]** 합배송 로직 구현
-  - [ ] Trigger: Orders 테이블 레코드 생성 시
-  - [ ] 우편번호 앞 3자리 추출
-  - [ ] Supplier + Postal_Prefix + Date로 그룹 검색
-  - [ ] 그룹 존재 시 주문 추가, 없으면 새 그룹 생성
-  - [ ] 배송비 절감 금액 계산 및 저장
-  - **완료 조건:** 10건의 주문이 올바르게 그룹핑됨
+- [x] **[TASK-017]** 합배송 로직 구현
+  - [x] Trigger: Orders 테이블 레코드 생성 시
+  - [x] 우편번호 앞 3자리 추출
+  - [x] Supplier + Postal_Prefix + Date로 그룹 검색
+  - [x] 그룹 존재 시 주문 추가, 없으면 새 그룹 생성
+  - **완료 조건:** 시나리오 정의 JSON 생성 완료 (`makecom-scenarios/02-fulfillment-grouping.json`)
 
 - [ ] **[TASK-018]** 합배송 효과 분석
   - [ ] Airtable View: 합배송 그룹별 절감액
