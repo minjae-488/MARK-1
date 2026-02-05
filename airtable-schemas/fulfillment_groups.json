@@ -1,0 +1,58 @@
+{
+    "tableName": "Fulfillment Groups",
+    "description": "배송비 최적화를 위한 합배송 주문 그룹",
+    "fields": [
+        {
+            "name": "Group ID",
+            "type": "formula",
+            "formula": "CONCATENATE({Supplier}, '-', DATETIME_FORMAT({Created At}, 'YYYYMMDD'), '-', {Postal Prefix})",
+            "description": "그룹 고유 ID (자동 생성)"
+        },
+        {
+            "name": "Supplier",
+            "type": "link",
+            "linkedTable": "Suppliers",
+            "description": "도매처"
+        },
+        {
+            "name": "Status",
+            "type": "singleSelect",
+            "options": [
+                "Collecting",
+                "Ready to Order",
+                "Ordered",
+                "Shipped",
+                "Completed"
+            ],
+            "description": "그룹 진행 상태"
+        },
+        {
+            "name": "Orders",
+            "type": "link",
+            "linkedTable": "Orders",
+            "description": "포함된 주문 목록"
+        },
+        {
+            "name": "Total Quantity",
+            "type": "rollup",
+            "options": {
+                "fieldLink": "Orders",
+                "fieldRollup": "Quantity",
+                "resultType": "sum"
+            },
+            "description": "총 주문 수량"
+        },
+        {
+            "name": "Postal Prefix",
+            "type": "singleLineText",
+            "description": "우편번호 앞 3자리 (지역 구분용)"
+        },
+        {
+            "name": "Created At",
+            "type": "createdTime",
+            "dateFormat": "Local",
+            "timeFormat": "24hour",
+            "description": "그룹 생성 시간"
+        }
+    ]
+}

@@ -1,0 +1,54 @@
+{
+    "tableName": "Suppliers",
+    "description": "도매처 및 공급사 정보 관리",
+    "fields": [
+        {
+            "name": "Supplier ID",
+            "type": "singleLineText",
+            "description": "도매처 고유 코드"
+        },
+        {
+            "name": "Name",
+            "type": "singleLineText",
+            "description": "도매처 상호명"
+        },
+        {
+            "name": "Order Method",
+            "type": "singleSelect",
+            "options": [
+                "Email",
+                "Website",
+                "API",
+                "KakaoTalk"
+            ],
+            "description": "발주 방식"
+        },
+        {
+            "name": "Contact Email",
+            "type": "email",
+            "description": "발주용 이메일"
+        },
+        {
+            "name": "Website URL",
+            "type": "url",
+            "description": "도매처 웹사이트 주소"
+        },
+        {
+            "name": "Login ID",
+            "type": "singleLineText",
+            "description": "웹사이트 로그인 ID"
+        },
+        {
+            "name": "Products",
+            "type": "link",
+            "linkedTable": "Products",
+            "description": "취급 상품 목록"
+        },
+        {
+            "name": "Reliability Score",
+            "type": "number",
+            "precision": 1,
+            "description": "도매처 신뢰도 점수 (1-5)"
+        }
+    ]
+}

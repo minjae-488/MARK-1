@@ -1,0 +1,95 @@
+{
+    "tableName": "Orders",
+    "description": "모든 판매 채널의 주문을 통합 관리하는 테이블",
+    "fields": [
+        {
+            "name": "Order ID",
+            "type": "singleLineText",
+            "description": "주문 고유 번호 (채널사 주문번호)"
+        },
+        {
+            "name": "Channel",
+            "type": "singleSelect",
+            "options": [
+                "Smartstore",
+                "Coupang",
+                "11st"
+            ],
+            "description": "판매 채널"
+        },
+        {
+            "name": "Status",
+            "type": "singleSelect",
+            "options": [
+                "Paid",
+                "Processing",
+                "Ordered",
+                "Shipped",
+                "Delivered",
+                "Cancelled"
+            ],
+            "description": "주문 처리 상태"
+        },
+        {
+            "name": "Product Name",
+            "type": "singleLineText",
+            "description": "상품명"
+        },
+        {
+            "name": "Option Code",
+            "type": "singleLineText",
+            "description": "상품 옵션 코드"
+        },
+        {
+            "name": "Quantity",
+            "type": "number",
+            "precision": 0,
+            "description": "주문 수량"
+        },
+        {
+            "name": "Order Amount",
+            "type": "currency",
+            "currency": "KRW",
+            "precision": 0,
+            "description": "결제 금액"
+        },
+        {
+            "name": "Customer Name",
+            "type": "singleLineText",
+            "description": "주문자명"
+        },
+        {
+            "name": "Phone Number",
+            "type": "phoneNumber",
+            "description": "연락처"
+        },
+        {
+            "name": "Address",
+            "type": "multilineText",
+            "description": "배송지 주소"
+        },
+        {
+            "name": "Postal Code",
+            "type": "singleLineText",
+            "description": "우편번호"
+        },
+        {
+            "name": "Tracking Number",
+            "type": "singleLineText",
+            "description": "운송장 번호"
+        },
+        {
+            "name": "Order Date",
+            "type": "dateTime",
+            "dateFormat": "Local",
+            "timeFormat": "24hour",
+            "description": "주문 일시"
+        },
+        {
+            "name": "Fulfillment Group",
+            "type": "link",
+            "linkedTable": "Fulfillment Groups",
+            "description": "연결된 합배송 그룹"
+        }
+    ]
+}
