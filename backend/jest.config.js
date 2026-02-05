@@ -22,6 +22,7 @@ module.exports = {
             statements: 80,
         },
     },
+    // Path aliases
     moduleNameMapper: {
         '^@/(.*)$': '<rootDir>/src/$1',
     },
