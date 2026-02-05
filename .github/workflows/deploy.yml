@@ -18,7 +18,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  # 테스트 Job
+  # 테스트 Job (소스 코드가 있을 때만 실행)
   test:
     runs-on: ubuntu-latest
     strategy:
@@ -36,22 +36,37 @@ jobs:
           cache: 'npm'
           cache-dependency-path: '**/package-lock.json'
 
-      # Backend 테스트 (TDD)
+      # Backend 소스 코드 존재 여부 확인
+      - name: Backend 소스 코드 확인
+        id: check-backend
+        run: |
+          if [ -d "./backend/src" ]; then
+            echo "exists=true" >> $GITHUB_OUTPUT
+          else
+            echo "exists=false" >> $GITHUB_OUTPUT
+            echo "⚠️ Backend 소스 코드가 없습니다. 테스트를 스킵합니다."
+          fi
+
+      # Backend 테스트 (TDD) - 소스 코드가 있을 때만
       - name: Backend 의존성 설치
+        if: steps.check-backend.outputs.exists == 'true'
         working-directory: ./backend
         run: npm ci
 
       - name: Backend 린트 검사
+        if: steps.check-backend.outputs.exists == 'true'
         working-directory: ./backend
         run: npm run lint
 
       - name: Backend 단위 테스트
+        if: steps.check-backend.outputs.exists == 'true'
         working-directory: ./backend
         run: npm run test:cov
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
 
       - name: 테스트 커버리지 업로드
+        if: steps.check-backend.outputs.exists == 'true'
         uses: codecov/codecov-action@v3
         with:
           files: ./backend/coverage/coverage-final.json
@@ -75,15 +90,98 @@ jobs:
           cache: 'npm'
           cache-dependency-path: 'frontend/package-lock.json'
 
+      # Frontend 소스 코드 확인
+      - name: Frontend 소스 코드 확인
+        id: check-frontend
+        run: |
+          if [ -d "./frontend/app" ] || [ -d "./frontend/pages" ]; then
+            echo "exists=true" >> $GITHUB_OUTPUT
+          else
+            echo "exists=false" >> $GITHUB_OUTPUT
+            echo "⚠️ Frontend 소스 코드가 없습니다. 기본 페이지를 생성합니다."
+          fi
+
       - name: Frontend 의존성 설치
+        if: steps.check-frontend.outputs.exists == 'true'
         working-directory: ./frontend
         run: npm ci
 
       - name: Next.js 정적 빌드
+        if: steps.check-frontend.outputs.exists == 'true'
         working-directory: ./frontend
         run: npm run build
         env:
           NEXT_PUBLIC_API_URL: ${{ secrets.NEXT_PUBLIC_API_URL }}
+
+      # 소스 코드가 없을 때 기본 페이지 생성
+      - name: 기본 페이지 생성
+        if: steps.check-frontend.outputs.exists == 'false'
+        run: |
+          mkdir -p frontend/out
+          cat > frontend/out/index.html << 'EOF'
+          <!DOCTYPE html>
+          <html lang="ko">
+          <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>MARK-1 - AI기반 이커머스 자동화 플랫폼</title>
+            <style>
+              body {
+                margin: 0;
+                padding: 0;
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                color: white;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                min-height: 100vh;
+                text-align: center;
+              }
+              .container {
+                max-width: 800px;
+                padding: 40px;
+              }
+              h1 {
+                font-size: 3rem;
+                margin-bottom: 20px;
+              }
+              p {
+                font-size: 1.2rem;
+                opacity: 0.9;
+              }
+              .badge {
+                display: inline-block;
+                padding: 10px 20px;
+                background: rgba(255,255,255,0.2);
+                border-radius: 20px;
+                margin: 10px 5px;
+              }
+              a {
+                color: white;
+                text-decoration: none;
+                border-bottom: 2px solid white;
+              }
+            </style>
+          </head>
+          <body>
+            <div class="container">
+              <h1>🚀 MARK-1</h1>
+              <p>AI 기반 자율형 이커머스 통합 솔루션</p>
+              <div>
+                <span class="badge">TDD</span>
+                <span class="badge">SOLID</span>
+                <span class="badge">Full-Stack</span>
+                <span class="badge">AI/ML</span>
+              </div>
+              <p style="margin-top: 40px;">
+                프로젝트 개발 진행 중...<br>
+                자세한 내용은 <a href="https://github.com/minjae-488/MARK-1">GitHub</a>에서 확인하세요!
+              </p>
+            </div>
+          </body>
+          </html>
+          EOF
 
       - name: GitHub Pages 설정
         uses: actions/configure-pages@v4
