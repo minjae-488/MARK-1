@@ -1,0 +1,42 @@
+{
+    "name": "mark-1-backend",
+    "version": "0.1.0",
+    "description": "MARK-1 Backend API",
+    "main": "dist/index.js",
+    "scripts": {
+        "dev": "ts-node-dev --respawn --transpile-only src/index.ts",
+        "build": "tsc",
+        "start": "node dist/index.js",
+        "test": "jest",
+        "test:watch": "jest --watch",
+        "test:cov": "jest --coverage",
+        "test:integration": "jest --config jest.integration.config.js",
+        "lint": "eslint src --ext .ts",
+        "lint:fix": "eslint src --ext .ts --fix",
+        "format": "prettier --write \"src/**/*.ts\"",
+        "type-check": "tsc --noEmit"
+    },
+    "keywords": [
+        "ecommerce",
+        "automation",
+        "ai",
+        "tdd"
+    ],
+    "author": "minjae-488",
+    "license": "MIT",
+    "devDependencies": {
+        "@types/jest": "^29.5.11",
+        "@types/node": "^20.11.0",
+        "@typescript-eslint/eslint-plugin": "^6.19.0",
+        "@typescript-eslint/parser": "^6.19.0",
+        "eslint": "^8.56.0",
+        "jest": "^29.7.0",
+        "prettier": "^3.2.4",
+        "ts-jest": "^29.1.1",
+        "ts-node-dev": "^2.0.0",
+        "typescript": "^5.3.3"
+    },
+    "dependencies": {
+        "dotenv": "^16.4.0"
+    }
+}
